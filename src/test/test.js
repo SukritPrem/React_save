@@ -10,17 +10,19 @@ export default function App() {
     const value = e.target.value;
     setnumst({ ...numst, [name]: value });
   };
-  // function restart() {
-  //   setSquarea({});
-  // }
-  const restart = () => {
-    setSquare({});
-  };
+  function restart() {
+    setSquarea({});
+  }
+  // const restart = () => {
+  //   setSquare({});
+  // };
+  let num_matrix = 0;
   const handleSubmit = (e) => {
     e.preventDefault();
     let x = numst.value;
     x = Number(x);
-    // convert num to array
+    // convert num to
+    num_matrix = x;
     setSquarea((...squarea) => {
       console.log(...squarea);
       const newSquares = [];
@@ -34,8 +36,22 @@ export default function App() {
     setnumst({ ...numst, ["value"]: 0 });
   };
 
-  const squareElements = squarea.map(() => <Box />);
-
+  let check = false; //check squarea null?
+  let squareElements = [];
+  // console.log(squarea.length > 0);
+  if (squarea.length > 0) {
+    squareElements = squarea.map(() => <Box />);
+    check = true;
+  }
+  let string = "repeat(" + num_matrix + ", auto)";
+  console.log(squarea);
+  console.log(check);
+  const style = {
+    display: "grid",
+    gridTemplateColumns: "repeat(4),auto",
+    width: "100px",
+    margin: "auto",
+  };
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -48,7 +64,11 @@ export default function App() {
         />
         <button onClick={restart}>restart</button>
       </form>
-      {<div class="grid">{squareElements}</div>}
+      {check && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4),1fr" }}>
+          {squareElements}
+        </div>
+      )}
     </>
   );
 }
