@@ -52,7 +52,9 @@ export default function App() {
   const initialstringwin = { value: {} };
   const [stringwin, setstringwin] = useReducer(reducer_s_win, initialstringwin);
   const [another_win, setanotherwin] = useState(false); // check have some one win?
-  const [textwin, settextwin] = useState("");
+  const [textwin, settextwin] = useState(""); //show text for winner
+  const [numhis, setnumhistory] = useState(0);
+  const [history, sethistory] = useState({});
   function handleChange(e) {
     let num1 = Number(e.target.value);
     // console.log(num1);
@@ -66,6 +68,8 @@ export default function App() {
     setturn(false);
     setanotherwin(false);
     settextwin("");
+    sethistory({});
+    setnumhistory(0);
     dispatch({
       type: "changed_board",
       value: {},
@@ -81,6 +85,15 @@ export default function App() {
       const newSquares = [];
       for (let i = 0; i < loop; i++) {
         const currentSquare = { id: i, st: "" };
+        newSquares.push(currentSquare);
+      }
+      return newSquares;
+    });
+    sethistory(() => {
+      // console.log(...squarea);
+      const newSquares = [];
+      for (let i = 0; i < loop; i++) {
+        const currentSquare = { id: i, array: [] };
         newSquares.push(currentSquare);
       }
       return newSquares;
@@ -184,6 +197,8 @@ export default function App() {
           setnextplay(true);
           return currentSquare;
         });
+
+        // sethistory(...history, square_clone);
       } else if (nextplay === true) {
         square_clone = state["value"].map((square, index) => {
           if (square.id === key && square.st === " ") {
@@ -198,10 +213,15 @@ export default function App() {
           }
           return square;
         });
+        console.log(history);
+
+        // sethistory(...history, square_clone);
       }
       // console.log(nextplay);
       // console.log(square_clone);
       // console.log(square);
+      console.log(history);
+      console.log(numhis);
       dispatch({
         type: "changed_board",
         value: square_clone,
@@ -241,12 +261,24 @@ export default function App() {
       settextwin("I'm winner");
     }
   }
+
   //  console.log(nextplay);
   let squareElements = [];
   if (square.length > 0 && nextplay === false && another_win === false) {
     squareElements = square.map((square) => (
       <Box id={square.id} toggle={toggle} />
     ));
+    console.log(squareElements);
+    // setnumhistory(numhis + 1);
+    // let his = square.map((square) => {
+    //   // console.log(square);
+    //   if (square.id === numhis) {
+    //     return { ...square, array: squareElements };
+    //   } else {
+    //     return square;
+    //   }
+    // });
+    // sethistory(his);
   } else if (
     state["value"].length > 0 &&
     nextplay === true &&
@@ -262,6 +294,20 @@ export default function App() {
       <Box id={square1.id} toggle={toggle} st={square1.st} />
     ));
   }
+
+  // let hisbutton = [];
+  // function rematch(id, hisarray) {
+  //   console.log(id, hisarray);
+  // }
+  // if (history.length > 0) {
+  //   hisbutton = history.map((square) => {
+  //     return (
+  //       <li>
+  //         <button onClick={rematch(square.id, square)}>{square.id + 1}</button>
+  //       </li>
+  //     );
+  //   });
+  // }
   //   function x() {
   //     dispatch({
   //       type: "changed_name",
@@ -277,6 +323,7 @@ export default function App() {
         </div>
         <div>{textwin}</div>
       </form>
+      {/* <div>{hisbutton}</div> */}
     </div>
   );
 }
