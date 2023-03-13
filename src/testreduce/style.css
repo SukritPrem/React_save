@@ -14,9 +14,29 @@
     display: grid;
     grid-template-columns: repeat(var(--columns-count), auto);
     width: 100px;
-    margin: auto;
+;
 }
 
 :root {
     --columns-count: 3;
+}
+
+.input{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.input1{
+    display: flex;
+    justify-content: center;
+    width: calc(101.9px * var(--columns-count));
+    margin-bottom: 50px;
+    margin-Top: 50px;
+}
+.form{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    /* width:calc(101.9px * var(--columns-count)) ; */
 }

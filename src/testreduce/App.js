@@ -470,9 +470,11 @@ export default function App() {
   // console.log(statehis);
   // console.log(history1);
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input value={state.name} onChange={handleChange} />
+    <div className="input">
+      <form onSubmit={handleSubmit} className="form" style={cssProperties}>
+        <div className="input1">
+          <input value={state.name} onChange={handleChange} />
+        </div>
         <div className="grid" style={cssProperties}>
           {squareElements}
         </div>
@@ -487,7 +489,7 @@ export default function App() {
           <button onClick={() => setmaxhis(maxhis + 1)}>next</button>
         )} */}
       </div>
-      {maxhis}
+      {/* {maxhis} */}
     </div>
   );
 }
