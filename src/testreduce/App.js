@@ -58,7 +58,11 @@ export default function App() {
   const [numhis, setnumhistory] = useState(0);
   const [history, sethistory] = useState({});
   const [maxhis, setmaxhis] = useState(0);
+  const [maxhis_button, setmaxhis_button] = useState(0);
   const [statehis, setstatehis] = useState(false);
+  const [hiddenbutton_r, sethiddenbutton_r] = useState(true);
+  const [hiddenbutton_n, sethiddenbutton_n] = useState(true);
+  const [count_el, setcount_el] = useState(true);
   function handleChange(e) {
     let num1 = Number(e.target.value);
     // console.log(num1);
@@ -76,6 +80,10 @@ export default function App() {
     setnumhistory(0);
     setstatehis(false);
     setmaxhis(0);
+    sethiddenbutton_r(true);
+    sethiddenbutton_n(true);
+    setmaxhis_button(0);
+    setcount_el(0);
     dispatch({
       type: "changed_board",
       value: {},
@@ -142,16 +150,19 @@ export default function App() {
       }
       array_c = [];
       for (let i = 0; i < num; i++) {
+        // console.log(arrays[i][i]);
         array_c.push(arrays[i][i]);
       }
       arrays.push(array_c);
       array_c = [];
       let j = 0;
       for (let i = num - 1; 0 <= i; i--) {
+        // console.log(arrays[j][i]);
         array_c.push(arrays[j][i]);
         j++;
       }
-      // console.log(arrays);
+      arrays.push(array_c);
+      console.log(arrays);
       return arrays;
     }
     let array_win = array_set_win();
@@ -183,7 +194,7 @@ export default function App() {
   // console.log(square);
 
   function toggle(key) {
-    if (another_win === false && statehis == false) {
+    if (another_win === false && statehis === false) {
       let square_clone = [];
 
       if (nextplay === false) {
@@ -208,8 +219,6 @@ export default function App() {
         ////////////////////////////////////
         // [1, 1, 1, 1].every((val, i, arr) => val === arr[0]);
         let his = history.map((square) => {
-          // console.log(square);
-
           if (square.id === numhis && square.array.length === 0) {
             return { ...square, array: square_clone };
           } else {
@@ -262,7 +271,7 @@ export default function App() {
       // console.log(nextplay);
       // console.log(square_clone);
       // console.log(square);
-      console.log(history);
+      // console.log(history);
       // console.log(numhis);
       dispatch({
         type: "changed_board",
@@ -270,41 +279,89 @@ export default function App() {
       });
       // console.log(checkwinner);
       // console.log(state);
+
       checkwin(checkwinner["value"], square_clone);
       // console.log(stringwin);
       function checkwin(checkwinner, square_clone) {
-        let check_array = [];
         for (let i = 0; i < checkwinner.length; i++) {
           const value = checkwinner[i];
           let check_array = [];
           // console.log(square_clone[0]["st"]);
+
           for (let j = 0; j < value.length; j++) {
             check_array.push(square_clone[value[j]]["st"]);
           }
-          // console.log(check_array);
+
+          let trim = "";
           for (let j = 0; j < check_array.length; j++) {
             const element = check_array.join("");
-            // console.log(element);
+            trim = element.trim();
+            // console.log(trim.length);
+
             if (element === stringwin["valueX"]) {
               // console.log("found x");
-              settextwin("I'm winner");
+              settextwin("X winner");
               setanotherwin(true);
               setstatehis(true);
-              setmaxhis(key - 1);
+              sethiddenbutton_n(false);
+              //for count and replay
+              let count = [];
+              for (let i = 0; i < history.length; i++) {
+                console.log(history[i]);
+                if (history[i]["array"][i] != null) {
+                  console.log(history[i]["array"]);
+                  count.push(history[i]["array"]);
+                  setmaxhis(count.length);
+                  setmaxhis_button(count.length);
+                }
+              }
+              /////////////////////////////
               break;
             } else if (element === stringwin["valueO"]) {
               // console.log("found o");
-              settextwin("I'm winner");
+              settextwin("O winner");
               setanotherwin(true);
               setstatehis(true);
-              setmaxhis(key - 1);
+              sethiddenbutton_n(false);
+              //for count and replay
+              let count = [];
+              for (let i = 0; i < history.length; i++) {
+                console.log(history[i]);
+                if (history[i]["array"][i] != null) {
+                  console.log(history[i]["array"]);
+                  count.push(history[i]["array"]);
+                  setmaxhis(count.length);
+                  setmaxhis_button(count.length);
+                }
+              }
+              /////////////////////////////
               break;
+            } else if (trim.length === num) {
+              setcount_el(count_el + 1);
+              console.log(num * 2);
+              console.log(count_el);
+              if (count_el === num * 2) {
+                settextwin("Dual ");
+                setanotherwin(true);
+                setstatehis(true);
+                sethiddenbutton_n(false);
+                //for count and replay
+                let count = [];
+                for (let i = 0; i < history.length; i++) {
+                  console.log(history[i]);
+                  if (history[i]["array"][i] != null) {
+                    console.log(history[i]["array"]);
+                    count.push(history[i]["array"]);
+                    setmaxhis(count.length);
+                    setmaxhis_button(count.length);
+                  }
+                }
+              }
             }
           }
         }
       }
     } else if (another_win === true) {
-      settextwin("I'm winner");
     }
   }
 
@@ -338,9 +395,11 @@ export default function App() {
       <Box id={square1.id} toggle={toggle} st={square1.st} />
     ));
   } else if (statehis == true) {
-    console.log(maxhis);
+    // console.log(maxhis);
+
     history.map((square1) => {
       console.log(square1);
+      // console.log(maxhis);
       if (square1.id === maxhis) {
         squareElements = square1["array"].map((square1) => (
           <Box st={square1.st} toggle={toggle} />
@@ -350,13 +409,51 @@ export default function App() {
   }
   let button1 = [];
   if (statehis == true) {
-    button1 = [1, 2].map(() => {
+    // button1 = ["return", "next"].map((text) => {
+    //   return (
+    //     <div>
+    //       <button className="box" onClick={() => setvalue(text)}>
+    //         {text}
+    //       </button>
+    //     </div>
+    //   );
+    // });
+    button1 = [
+      { id: "1", value: "return", sethidden: hiddenbutton_r },
+      { id: "2", value: "next", sethidden: hiddenbutton_n },
+    ].map((text) => {
+      console.log(text.sethidden);
       return (
         <div>
-          <button className="box">X</button>
+          {text.sethidden && (
+            <button className="box" onClick={() => setvalue(text.value)}>
+              {text.value}
+            </button>
+          )}
         </div>
       );
     });
+  }
+  function setvalue(text) {
+    if (text === "return") {
+      console.log(maxhis_button);
+      setmaxhis(maxhis - 1);
+      if (maxhis === 1) {
+        sethiddenbutton_r(false);
+        sethiddenbutton_n(true);
+      } else {
+        sethiddenbutton_n(true);
+      }
+    } else if (text === "next") {
+      setmaxhis(maxhis + 1);
+      console.log(maxhis_button);
+      if (maxhis === maxhis_button - 1) {
+        sethiddenbutton_n(false);
+        sethiddenbutton_r(true);
+      } else {
+        sethiddenbutton_r(true);
+      }
+    }
   }
   // function history1(status) {
   //   console.log(status);
@@ -370,7 +467,7 @@ export default function App() {
   //     }
   //   }
   // }
-  console.log(statehis);
+  // console.log(statehis);
   // console.log(history1);
   return (
     <div>
